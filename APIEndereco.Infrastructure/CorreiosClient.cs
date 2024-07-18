@@ -1,24 +1,28 @@
 ﻿using APIEndereco.Application;
 using APIEndereco.Domain;
+using APIEndereco.Domain.Exceptions;
 using Newtonsoft.Json;
 
 namespace APIEndereco.Infrastructure
 {
     public class CorreiosClient() : ICorreiosClient
     {
-        public async Task<Adress> GetAdressByCep(string cep)
+        public async Task<Address> GetAddressByCep(string cep)
         {
             HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync("https://viacep.com.br/ws/" + cep + "/json");
+            HttpResponseMessage response = await client.GetAsync($"https://viacep.com.br/ws/{cep}/json");
             response.EnsureSuccessStatusCode();
-            string jsonResponse = await response.Content.ReadAsStringAsync();
 
-            Adress? adress = JsonConvert.DeserializeObject<Adress>(jsonResponse);
+            string jsonString = await response.Content.ReadAsStringAsync();
 
-            if(adress == null) throw new Exception("Error while deserializing JSON");
+            var error = JsonConvert.DeserializeAnonymousType(jsonString, new { erro = false });
+            if(error != null && error.erro) throw new NotFoundException("CEP doesn't exist");
 
-            return adress;
 
+            Address? address = JsonConvert.DeserializeObject<Address>(jsonString);
+            if (address == null) throw new Exception("Error while deserializing JSON from Correios API");
+
+            return address;
         }
     }
 }

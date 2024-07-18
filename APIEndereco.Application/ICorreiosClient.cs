@@ -4,6 +4,6 @@ namespace APIEndereco.Application
 {
     public interface ICorreiosClient
     {
-        Task<Adress> GetAdressByCep(string cep);
+        Task<Address> GetAddressByCep(string cep);
     }
 }
