@@ -21,8 +21,6 @@ namespace APIEndereco.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateAddressRequest request)
         {
-            if(!ModelState.IsValid) return UnprocessableEntity(ModelState);
-
             try
             {
                 await _addressService.CreateByCep(request.Cep);
@@ -42,8 +40,6 @@ namespace APIEndereco.API.Controllers
         [HttpGet("{cep}")]
         public async Task<IActionResult> Get([Required, Cep] string cep)
         {
-            if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
-
             try
             {
                 var result = await _addressService.GetByCep(cep);
