@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace APIEndereco.Domain
 {
-    public class CepFormatter : ICepFormatter
+    public static class CepFormatter
     {
-        public string Format(string cep)
+        public static string Format(string cep)
         {
             return Convert.ToUInt32(cep).ToString(@"00000\-000");
         }
